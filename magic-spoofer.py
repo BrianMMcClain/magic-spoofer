@@ -1,4 +1,5 @@
 import argparse
+import json
 import sys
 
 # Parse CLI flags
@@ -18,10 +19,14 @@ if outPath == "-":
 else:
     outFile = open(outPath, 'wb')
 
-jpgMagic = "\xff\xd8\xff\xdb"
+# Parse sigs.json
+sigs = {}
+with open("sigs.json", "r") as sigFile:
+    sigs = json.loads(sigFile.read())
 
 # Generate new file with additional signature
-outFile.write(jpgMagic)
+magicSig = sigs[args.fileType].replace(' ', '').decode("hex")
+outFile.write(magicSig)
 outFile.write(inFile.read())
 
 # Close file handlers
